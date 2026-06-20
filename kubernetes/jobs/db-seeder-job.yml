@@ -1,0 +1,43 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-seeder
+  namespace: production
+  labels:
+    app: db-seeder
+spec:
+  backoffLimit: 1
+  template:
+    metadata:
+      labels:
+        app: db-seeder
+        azure.workload.identity/use: "true"
+    spec:
+      serviceAccountName: docbridge-workload-sa
+      nodeSelector:
+        nodepool-type: application
+      restartPolicy: Never
+      containers:
+        - name: db-seeder
+          image: docbridgedevacr.azurecr.io/db-migrations:latest
+          command: ["npm", "run", "seed"]
+          envFrom:
+            - configMapRef:
+                name: docbridge-config
+          env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: docbridge-secrets
+                  key: DB_PASSWORD
+          volumeMounts:
+            - name: secrets-store
+              mountPath: /mnt/secrets-store
+              readOnly: true
+      volumes:
+        - name: secrets-store
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: docbridge-secret-provider

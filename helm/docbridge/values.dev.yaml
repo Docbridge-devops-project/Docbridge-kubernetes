@@ -1,0 +1,5 @@
+# Development environment overrides for DocBridge Helm Chart.
+environment: "dev"
+
+global:
+  namespace: production

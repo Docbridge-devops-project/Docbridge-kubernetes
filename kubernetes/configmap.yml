@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: docbridge-config
+  namespace: production
+data:
+  NODE_ENV: "production"
+  DB_HOST: "docbridge-dev-postgres-c.postgres.database.azure.com"
+  DB_PORT: "5432"
+  DB_NAME: "docbridge_db"
+  DB_USER: "docbridge_user"
+  DB_SSL: "true"
+  CORS_ORIGIN: "http://172.168.186.105"
+  AZURE_OPENAI_ENDPOINT: "https://docbridge-project1-resource.cognitiveservices.azure.com/"
+  AZURE_OPENAI_DEPLOYMENT_NAME: "gpt-4.1"
+  AZURE_OPENAI_API_VERSION: "2024-02-15-preview"
+  AUTH_SERVICE_URL: "http://auth-service-svc:3001"
+  CONSULTATION_SERVICE_URL: "http://consultation-service-svc:3002"
+  PRESCRIPTION_SERVICE_URL: "http://prescription-service-svc:3003"
+  REMINDER_SERVICE_URL: "http://reminder-service-svc:3004"
+  LABREPORT_SERVICE_URL: "http://labreport-service-svc:3005"
+  SYMPTOM_SERVICE_URL: "http://symptom-service-svc:3006"
+  AI_COMPANION_SERVICE_URL: "http://ai-companion-service-svc:3007"
+  HEALTH_SUMMARY_SERVICE_URL: "http://health-summary-service-svc:3008"
+  FAMILY_SERVICE_URL: "http://family-service-svc:3009"
+  API_GATEWAY_URL: "http://api-gateway-svc:3000/api/v1"
+

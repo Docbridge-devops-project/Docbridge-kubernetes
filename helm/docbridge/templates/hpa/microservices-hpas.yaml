@@ -1,0 +1,24 @@
+{{- if .Values.hpa.enabled }}
+{{- range $name := list "ai-companion-service" "api-gateway" "auth-service" "frontend" }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ $name }}-hpa
+  namespace: production
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ $name }}
+  minReplicas: {{ $.Values.hpa.minReplicas | default 1 }}
+  maxReplicas: {{ $.Values.hpa.maxReplicas | default 5 }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ $.Values.hpa.targetCPUUtilizationPercentage | default 80 }}
+---
+{{- end }}
+{{- end }}

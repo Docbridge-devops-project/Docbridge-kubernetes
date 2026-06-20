@@ -1,0 +1,47 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-migration
+  namespace: production
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+  labels:
+    app: db-migration
+spec:
+  backoffLimit: 2
+  template:
+    metadata:
+      labels:
+        app: db-migration
+        azure.workload.identity/use: "true"
+    spec:
+      serviceAccountName: docbridge-workload-sa
+      nodeSelector:
+        {{- toYaml .Values.global.nodeSelector | nindent 8 }}
+      restartPolicy: Never
+      containers:
+        - name: db-migration
+          image: {{ include "docbridge.image" (dict "name" "db-migrations" "context" .) }}
+          command: ["npm", "run", "migrate"]
+          envFrom:
+            - configMapRef:
+                name: docbridge-config
+          env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: docbridge-secrets
+                  key: DB_PASSWORD
+          volumeMounts:
+            - name: secrets-store
+              mountPath: /mnt/secrets-store
+              readOnly: true
+      volumes:
+        - name: secrets-store
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: docbridge-secret-provider

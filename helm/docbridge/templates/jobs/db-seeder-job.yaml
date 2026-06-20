@@ -1,0 +1,47 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-seeder
+  namespace: production
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "1"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+  labels:
+    app: db-seeder
+spec:
+  backoffLimit: 1
+  template:
+    metadata:
+      labels:
+        app: db-seeder
+        azure.workload.identity/use: "true"
+    spec:
+      serviceAccountName: docbridge-workload-sa
+      nodeSelector:
+        {{- toYaml .Values.global.nodeSelector | nindent 8 }}
+      restartPolicy: Never
+      containers:
+        - name: db-seeder
+          image: {{ include "docbridge.image" (dict "name" "db-migrations" "context" .) }}
+          command: ["sh", "-c", "npm run seed:undo || true; npm run seed"]
+          envFrom:
+            - configMapRef:
+                name: docbridge-config
+          env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: docbridge-secrets
+                  key: DB_PASSWORD
+          volumeMounts:
+            - name: secrets-store
+              mountPath: /mnt/secrets-store
+              readOnly: true
+      volumes:
+        - name: secrets-store
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: docbridge-secret-provider

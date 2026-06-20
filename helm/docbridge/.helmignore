@@ -1,0 +1,12 @@
+# Pattern-match files and directories to ignore when packaging.
+.DS_Store
+# Common vcs dirs
+.git/
+.gitignore
+# Common backup files
+*.bak
+*~
+# Various IDEs
+.project
+.idea/
+*.vscode/

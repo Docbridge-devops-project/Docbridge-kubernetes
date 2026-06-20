@@ -1,0 +1,101 @@
+{{- range $name, $config := .Values.services }}
+{{- if ne $name "db-migrations" }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $name }}
+  namespace: production
+  labels:
+    app: {{ $name }}
+spec:
+  replicas: {{ $config.replicas | default 1 }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: {{ $name }}
+  template:
+    metadata:
+      labels:
+        app: {{ $name }}
+        azure.workload.identity/use: "true"
+    spec:
+      serviceAccountName: docbridge-workload-sa
+      nodeSelector:
+        {{- toYaml $.Values.global.nodeSelector | nindent 8 }}
+      containers:
+        - name: {{ $name }}
+          image: {{ include "docbridge.image" (dict "name" $name "context" $) }}
+          imagePullPolicy: {{ $.Values.global.imagePullPolicy }}
+          ports:
+            - containerPort: {{ $config.port }}
+          envFrom:
+            - configMapRef:
+                name: docbridge-config
+          {{- if ne $name "frontend" }}
+          env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: docbridge-secrets
+                  key: DB_PASSWORD
+            - name: JWT_ACCESS_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: docbridge-secrets
+                  key: JWT_ACCESS_SECRET
+            - name: JWT_REFRESH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: docbridge-secrets
+                  key: JWT_REFRESH_SECRET
+            {{- if eq $name "api-gateway" }}
+            - name: REDIS_CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: docbridge-secrets
+                  key: REDIS_CONNECTION_STRING
+            {{- end }}
+            {{- if eq $name "ai-companion-service" }}
+            - name: AZURE_OPENAI_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: docbridge-secrets
+                  key: AZURE_OPENAI_KEY
+            {{- end }}
+          {{- end }}
+          resources:
+            {{- toYaml $config.resources | nindent 12 }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: {{ $config.port }}
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            failureThreshold: 3
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: {{ $config.port }}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+            timeoutSeconds: 5
+          volumeMounts:
+            - name: secrets-store
+              mountPath: /mnt/secrets-store
+              readOnly: true
+      volumes:
+        - name: secrets-store
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: docbridge-secret-provider
+---
+{{- end }}
+{{- end }}

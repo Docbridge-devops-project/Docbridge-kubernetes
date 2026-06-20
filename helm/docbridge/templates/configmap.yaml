@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: docbridge-config
+  namespace: production
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "-2"
+    "helm.sh/hook-delete-policy": before-hook-creation
+data:
+  NODE_ENV: "production"
+  DB_HOST: {{ .Values.database.host | quote }}
+  DB_PORT: {{ .Values.database.port | quote }}
+  DB_NAME: {{ .Values.database.name | quote }}
+  DB_USER: {{ .Values.database.user | quote }}
+  DB_SSL: {{ .Values.database.ssl | quote }}
+  CORS_ORIGIN: {{ .Values.gateway.corsOrigin | quote }}
+  AZURE_OPENAI_ENDPOINT: {{ .Values.gateway.azureOpenaiEndpoint | quote }}
+  AZURE_OPENAI_DEPLOYMENT_NAME: {{ .Values.gateway.azureOpenaiDeploymentName | quote }}
+  AZURE_OPENAI_API_VERSION: {{ .Values.gateway.azureOpenaiApiVersion | quote }}
+  AUTH_SERVICE_URL: "http://auth-service-svc:3001"
+  CONSULTATION_SERVICE_URL: "http://consultation-service-svc:3002"
+  PRESCRIPTION_SERVICE_URL: "http://prescription-service-svc:3003"
+  REMINDER_SERVICE_URL: "http://reminder-service-svc:3004"
+  LABREPORT_SERVICE_URL: "http://labreport-service-svc:3005"
+  SYMPTOM_SERVICE_URL: "http://symptom-service-svc:3006"
+  AI_COMPANION_SERVICE_URL: "http://ai-companion-service-svc:3007"
+  HEALTH_SUMMARY_SERVICE_URL: "http://health-summary-service-svc:3008"
+  FAMILY_SERVICE_URL: "http://family-service-svc:3009"
+  API_GATEWAY_URL: "http://api-gateway-svc:3000/api/v1"

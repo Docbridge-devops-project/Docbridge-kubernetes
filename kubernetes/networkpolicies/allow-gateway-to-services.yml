@@ -1,0 +1,235 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-gateway-to-services
+  namespace: production
+spec:
+  podSelector:
+    matchLabels:
+      app: api-gateway
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - podSelector: {}
+        - ipBlock:
+            cidr: 10.0.2.0/24
+        - ipBlock:
+            cidr: 10.0.1.0/24
+      ports:
+        - protocol: TCP
+          port: 3000
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app: auth-service
+      ports:
+        - protocol: TCP
+          port: 3001
+    - to:
+        - podSelector:
+            matchLabels:
+              app: consultation-service
+      ports:
+        - protocol: TCP
+          port: 3002
+    - to:
+        - podSelector:
+            matchLabels:
+              app: prescription-service
+      ports:
+        - protocol: TCP
+          port: 3003
+    - to:
+        - podSelector:
+            matchLabels:
+              app: reminder-service
+      ports:
+        - protocol: TCP
+          port: 3004
+    - to:
+        - podSelector:
+            matchLabels:
+              app: labreport-service
+      ports:
+        - protocol: TCP
+          port: 3005
+    - to:
+        - podSelector:
+            matchLabels:
+              app: symptom-service
+      ports:
+        - protocol: TCP
+          port: 3006
+    - to:
+        - podSelector:
+            matchLabels:
+              app: ai-companion-service
+      ports:
+        - protocol: TCP
+          port: 3007
+    - to:
+        - podSelector:
+            matchLabels:
+              app: health-summary-service
+      ports:
+        - protocol: TCP
+          port: 3008
+    - to:
+        - podSelector:
+            matchLabels:
+              app: family-service
+      ports:
+        - protocol: TCP
+          port: 3009
+    - to:
+        - podSelector:
+            matchLabels:
+              app: redis
+      ports:
+        - protocol: TCP
+          port: 6379
+    - ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-services-to-gateway
+  namespace: production
+spec:
+  podSelector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - auth-service
+          - consultation-service
+          - prescription-service
+          - reminder-service
+          - labreport-service
+          - symptom-service
+          - ai-companion-service
+          - health-summary-service
+          - family-service
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app: api-gateway
+      ports:
+        - protocol: TCP
+          port: 3000
+    - ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-gateway-to-microservices
+  namespace: production
+spec:
+  podSelector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - auth-service
+          - consultation-service
+          - prescription-service
+          - reminder-service
+          - labreport-service
+          - symptom-service
+          - ai-companion-service
+          - health-summary-service
+          - family-service
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: api-gateway
+      ports:
+        - protocol: TCP
+          port: 3001
+        - protocol: TCP
+          port: 3002
+        - protocol: TCP
+          port: 3003
+        - protocol: TCP
+          port: 3004
+        - protocol: TCP
+          port: 3005
+        - protocol: TCP
+          port: 3006
+        - protocol: TCP
+          port: 3007
+        - protocol: TCP
+          port: 3008
+        - protocol: TCP
+          port: 3009
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-frontend-ingress
+  namespace: production
+spec:
+  podSelector:
+    matchLabels:
+      app: frontend
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - ipBlock:
+            cidr: 10.0.2.0/24
+        - ipBlock:
+            cidr: 10.0.1.0/24
+      ports:
+        - protocol: TCP
+          port: 80
+  egress:
+    - ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-redis-ingress
+  namespace: production
+spec:
+  podSelector:
+    matchLabels:
+      app: redis
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector: {}
+      ports:
+        - protocol: TCP
+          port: 6379

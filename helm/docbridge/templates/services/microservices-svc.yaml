@@ -1,0 +1,18 @@
+{{- range $name, $config := .Values.services }}
+{{- if ne $name "db-migrations" }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $name }}-svc
+  namespace: production
+spec:
+  ports:
+    - port: {{ $config.port }}
+      targetPort: {{ $config.port }}
+      protocol: TCP
+  selector:
+    app: {{ $name }}
+  type: ClusterIP
+---
+{{- end }}
+{{- end }}

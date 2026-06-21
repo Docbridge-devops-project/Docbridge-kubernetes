@@ -61,7 +61,7 @@ services:
     resources:
       requests:
         memory: "128Mi"
-        cpu: "100m"
+        cpu: "20m"
       limits:
         memory: "512Mi"
         cpu: "500m"
@@ -71,7 +71,7 @@ services:
     resources:
       requests:
         memory: "128Mi"
-        cpu: "100m"
+        cpu: "20m"
       limits:
         memory: "512Mi"
         cpu: "500m"
@@ -81,7 +81,7 @@ services:
     resources:
       requests:
         memory: "128Mi"
-        cpu: "100m"
+        cpu: "20m"
       limits:
         memory: "512Mi"
         cpu: "500m"
@@ -91,7 +91,7 @@ services:
     resources:
       requests:
         memory: "128Mi"
-        cpu: "100m"
+        cpu: "20m"
       limits:
         memory: "512Mi"
         cpu: "500m"
@@ -111,7 +111,7 @@ services:
     resources:
       requests:
         memory: "128Mi"
-        cpu: "100m"
+        cpu: "20m"
       limits:
         memory: "512Mi"
         cpu: "500m"
@@ -121,7 +121,7 @@ services:
     resources:
       requests:
         memory: "128Mi"
-        cpu: "100m"
+        cpu: "20m"
       limits:
         memory: "512Mi"
         cpu: "500m"
@@ -131,7 +131,7 @@ services:
     resources:
       requests:
         memory: "128Mi"
-        cpu: "100m"
+        cpu: "20m"
       limits:
         memory: "512Mi"
         cpu: "500m"
@@ -141,7 +141,7 @@ services:
     resources:
       requests:
         memory: "128Mi"
-        cpu: "100m"
+        cpu: "20m"
       limits:
         memory: "512Mi"
         cpu: "500m"
@@ -151,7 +151,7 @@ services:
     resources:
       requests:
         memory: "128Mi"
-        cpu: "100m"
+        cpu: "20m"
       limits:
         memory: "512Mi"
         cpu: "500m"
@@ -161,7 +161,7 @@ services:
     resources:
       requests:
         memory: "128Mi"
-        cpu: "100m"
+        cpu: "20m"
       limits:
         memory: "512Mi"
         cpu: "500m"
@@ -173,7 +173,7 @@ redis:
   resources:
     requests:
       memory: "64Mi"
-      cpu: "50m"
+      cpu: "20m"
     limits:
       memory: "128Mi"
       cpu: "100m"

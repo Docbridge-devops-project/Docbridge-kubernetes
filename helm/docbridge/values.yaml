@@ -95,6 +95,16 @@ services:
       limits:
         memory: "512Mi"
         cpu: "500m"
+  frontend:
+    port: 80
+    replicas: 1
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "10m"
+      limits:
+        memory: "256Mi"
+        cpu: "100m"
   family-service:
     port: 3009
     replicas: 1

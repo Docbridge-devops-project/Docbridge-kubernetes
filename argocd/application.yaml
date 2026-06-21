@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: docbridge
+  namespace: argocd
+spec:
+  project: docbridge-project
+  source:
+    repoURL: 'https://github.com/Docbridge-devops-project/Docbridge-kubernetes.git'
+    targetRevision: main
+    path: helm/docbridge
+    helm:
+      valueFiles:
+        - values.yaml
+        - values.dev.yaml
+      parameters:
+        - name: azure.keyVaultName
+          value: docbridge-dev-kv
+        - name: azure.workloadIdentityClientId
+          value: "32859642-274e-4aec-9d95-b7a0fc89cc03"
+        - name: azure.tenantId
+          value: "ffdb5413-63c8-40ec-a158-c5ad34880e3d"
+        - name: database.host
+          value: docbridge-dev-postgres-c.postgres.database.azure.com
+        - name: gateway.corsOrigin
+          value: "http://20.15.142.7"
+        - name: image.tag
+          value: "11c0a47"
+        - name: global.imageTag
+          value: "11c0a47"
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: production
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

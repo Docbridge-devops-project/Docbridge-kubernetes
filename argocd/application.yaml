@@ -25,9 +25,9 @@ spec:
         - name: gateway.corsOrigin
           value: "http://20.118.10.38"
         - name: image.tag
-          value: "6a803d6"
+          value: "e4019ef"
         - name: global.imageTag
-          value: "6a803d6"
+          value: "e4019ef"
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: production
@@ -37,4 +37,3 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-

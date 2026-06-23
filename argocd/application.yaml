@@ -17,13 +17,13 @@ spec:
         - name: azure.keyVaultName
           value: docbridge-dev-kv
         - name: azure.workloadIdentityClientId
-          value: "f20c8a93-cb30-4391-b59e-796a90c4f936"
+          value: "c0fd539f-5d5e-411a-aef4-29c44997a94d"
         - name: azure.tenantId
           value: "ffdb5413-63c8-40ec-a158-c5ad34880e3d"
         - name: database.host
           value: docbridge-dev-postgres-c.postgres.database.azure.com
         - name: gateway.corsOrigin
-          value: "http://20.221.52.37"
+          value: "http://20.118.10.38"
         - name: image.tag
           value: "6a803d6"
         - name: global.imageTag
@@ -37,3 +37,4 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+

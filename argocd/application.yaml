@@ -23,7 +23,7 @@ spec:
         - name: database.host
           value: docbridge-dev-postgres-c.postgres.database.azure.com
         - name: gateway.corsOrigin
-          value: "http://20.118.10.38"
+          value: "http://20.84.212.139"
         - name: image.tag
           value: "e4019ef"
         - name: global.imageTag

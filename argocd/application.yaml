@@ -23,11 +23,11 @@ spec:
         - name: database.host
           value: docbridge-dev-postgres-c.postgres.database.azure.com
         - name: gateway.corsOrigin
-          value: "http://20.84.212.139"
+          value: "http://135.233.62.51"
         - name: image.tag
-          value: "e4019ef"
+          value: "0f0907b"
         - name: global.imageTag
-          value: "e4019ef"
+          value: "0f0907b"
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: production

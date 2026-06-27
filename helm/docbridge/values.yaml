@@ -1,9 +1,6 @@
-# Default values for DocBridge Helm Chart.
-# This is a YAML-formatted file.
 
 environment: "dev"
 
-# Global settings
 global:
   imageRegistry: docbridgedevacr.azurecr.io
   imageTag: latest
@@ -35,26 +32,19 @@ gateway:
   azureOpenaiDeploymentName: "gpt-4.1"
   azureOpenaiApiVersion: "2024-02-15-preview"
 
-# Probes configuration
 probes:
   liveness:
     path: /healthz
   readiness:
     path: /ready
 
-# HPAs are disabled by default
 hpa:
   enabled: false
   minReplicas: 1
   maxReplicas: 5
   targetCPUUtilizationPercentage: 80
 
-# Microservices configuration
 services:
-  # Resource limits set to evaluation requirements.
-  # Azure OpenAI calls are async HTTP so memory footprint
-  # is manageable within 512Mi under normal load.
-  # Increase limits in production if OOM kills are observed.
   ai-companion-service:
     port: 3007
     replicas: 2

@@ -9,13 +9,11 @@ spec:
     - Ingress
     - Egress
   ingress:
-    # Allow metrics harvesting and agent scrapers from the kube-system namespace
     - from:
         - namespaceSelector:
             matchLabels:
               kubernetes.io/metadata.name: kube-system
   egress:
-    # Allow egress to Key Vault PE (10.0.4.0/24) and Azure Monitor/Azure OpenAI endpoints (HTTPS 443)
     - to:
         - ipBlock:
             cidr: 10.0.4.0/24
@@ -23,7 +21,6 @@ spec:
         - protocol: TCP
           port: 443
     - to:
-        # Allow general HTTPS out for public Azure APIs (Monitor, Azure OpenAI, etc.)
         - ipBlock:
             cidr: 0.0.0.0/0
             except:

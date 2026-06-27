@@ -1,4 +1,3 @@
-# Custom values for installing Argo CD on AKS
 server:
   extraArgs:
     - --insecure

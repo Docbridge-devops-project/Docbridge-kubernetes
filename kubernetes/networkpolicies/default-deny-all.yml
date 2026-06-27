@@ -8,4 +8,3 @@ spec:
   policyTypes:
     - Ingress
     - Egress
-# Empty ingress and egress lists mean deny all traffic
